@@ -1,2 +1,2 @@
 # SUSTeX
-A word game.
+![SUSTeX](/logo/logo.png)
