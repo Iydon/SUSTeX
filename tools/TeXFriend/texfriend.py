@@ -38,8 +38,8 @@
 counter = 0
 def do_nothing():
     global counter
-    title.config(text="do "+ str(counter))
-    counter+=1
+    counter += 1
+    print(counter)
 
 # Setting -> TopLevel
 top_level_flag = False
@@ -69,13 +69,20 @@ def variable_language(action:str):
 
 # Setting -> Help
 def show_author_information():
-  tk.messagebox.showinfo(LANG["Author"], message=LANG["AuthorInformation"])
+    tk.messagebox.showinfo(LANG["Author"], message=LANG["AuthorInformation"])
+
+# Features
+def features_exchange(event):
+    globals()["memo"].start(window).pack()
+
 
 
 # Import
 import tkinter as tk
 import tkinter.messagebox
+from tkinter import ttk
 from cfg import cfg, lang
+from utils import *
 
 
 # CONSTANE
@@ -86,11 +93,6 @@ window = tk.Tk()
 window.title(cfg.TEXFRIEND_WINDOWN_TITLE)
 window.iconbitmap(cfg.TEXFRIEND_ICON_PATH)
 window.geometry(cfg.TEXFRIEND_GEOMETRY)
-
-
-title = tk.Label(window, text="", bg="yellow")
-title.pack(side=tk.TOP)
-
 
 # Menu bar
 menubar  = tk.Menu(window)
@@ -122,6 +124,18 @@ menu_setting_lang.add_radiobutton(label="Le Français", variable=lang_choice, va
 menu_help = tk.Menu(menubar, tearoff=False)
 menubar.add_cascade(label=LANG["Help"], menu=menu_help, underline=False)
 menu_help.add_command(label=LANG["Author"], command=show_author_information)
+
+# Features
+feature_frame = tk.Frame(window)
+feature_name = tk.StringVar()
+features = ttk.Combobox(feature_frame, textvariable=feature_name)
+features.grid()
+features["values"] = ([LANG[code] for code in cfg.TEXFRIEND_FEATURES_LIST])
+features["state"] = "readonly"
+features.current(0)
+features.bind("<<ComboboxSelected>>", features_exchange)
+features.grid(column=0, row=1)
+feature_frame.pack(side=tk.TOP)
 
 # Pack
 window.config(menu=menubar)

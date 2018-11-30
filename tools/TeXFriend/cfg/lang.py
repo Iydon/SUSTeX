@@ -33,6 +33,9 @@ en = parse("""
 # Menubar -> Help
     Author:   Author
         AuthorInformation: Iydon Leong, SUSTeX.
+# Features
+    FeatureMemo: Memo
+    FeatureTest: Test
 """.strip())
 
 zh = parse("""
@@ -52,6 +55,9 @@ zh = parse("""
 # Menubar -> Help
     Author:   作者
         AuthorInformation: Iydon Leong, SUSTeX.
+# Features
+    FeatureMemo: 备忘录
+    FeatureTest: 测试
 """.strip())
 
 fr = parse("""
@@ -71,4 +77,7 @@ fr = parse("""
 # Menubar -> Help
     Author:   Auteur
         AuthorInformation: Iydon Leong, SUSTeX.
+# Features
+    FeatureMemo: Mémo
+    FeatureTest: Test
 """.strip())
