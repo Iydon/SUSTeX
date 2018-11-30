@@ -10,7 +10,7 @@ TEXFRIEND_WINDOWN_TITLE = "TeX Friend"
 TEXFRIEND_ICON_PATH = "logo/logo.ico"
 TEXFRIEND_GEOMETRY = "300x400"
 TEXFRIEND_LANGUAGE_LIST = ["zh", "en", "fr"] # Order is important.
-TEXFRIEND_LANGUAGE_FILE = "cfg/_language.txt"
+TEXFRIEND_LANGUAGE_FILE = "cfg/variables/_language.txt"
 TEXFRIEND_ENCODING = "utf-8"
 
 # lang.py
