@@ -5,4 +5,4 @@
 
 ![SUSTeX](/logo/logo.png)
 
-**TODO**
+See also [LaTeX Template](https://github.com/Iydon/LaTeX_template).
