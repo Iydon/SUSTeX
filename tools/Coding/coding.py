@@ -42,28 +42,28 @@ if args.To==None:         args.To="utf-8"
 PYOUT = print
 
 def is_right_suffix(name:str, suffix:str, identifier:str):
-	"""
-	判断后缀名是否需要更改.
-	-------
-	Args:
-	    name:       String, 文件名称.
-	    suffix:     String, 命令行输入后缀.
-	    identifier: String, 分隔符, 生成后缀列表.
-	"""
+    """
+    判断后缀名是否需要更改.
+    -------
+    Args:
+        name:       String, 文件名称.
+        suffix:     String, 命令行输入后缀.
+        identifier: String, 分隔符, 生成后缀列表.
+    """
     for i in suffix.split(identifier):
         if name.endswith(i):
             return True
     return False
 
 def change_coding(File:str, From:str, To:str):
-	"""
-	更改编码.
-	-------
-	Args:
-	    File: String, 文件名称.
-	    From: String, 初始编码.
-	    To:   String, 目标编码.
-	"""
+    """
+    更改编码.
+    -------
+    Args:
+        File: String, 文件名称.
+        From: String, 初始编码.
+        To:   String, 目标编码.
+    """
     content = b""
     with open(File, "rb") as f:
         content = f.read()
@@ -78,7 +78,7 @@ def change_coding(File:str, From:str, To:str):
         f.write(content)
 
 if args.Recursive == "1":
-	# 递归更改文件.
+    # 递归更改文件.
     for dirpath, dirnames, filenames in os.walk(args.Directory):
         for filepath in filenames:
             file_path = os.path.join(dirpath, filepath)
@@ -86,7 +86,7 @@ if args.Recursive == "1":
             if is_right_suffix(file_path, args.Suffix, args.Identifier):
                 change_coding(file_path, args.From, args.To)
 elif args.Recursive == "0":
-	# 当前文件夹.
+    # 当前文件夹.
     for file in os.listdir(args.Directory):
         file_path = os.path.join(args.Directory, file)
         if os.path.isdir(file_path):
@@ -95,6 +95,6 @@ elif args.Recursive == "0":
         if is_right_suffix(file_path, args.Suffix, args.Identifier):
             change_coding(file_path, args.From, args.To)
 else:
-	# 指定文件.
+    # 指定文件.
     if is_right_suffix(args.Recursive, args.Suffix, args.Identifier):
         change_coding(args.Recursive, args.From, args.To)
