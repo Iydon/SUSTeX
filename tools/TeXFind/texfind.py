@@ -1,8 +1,8 @@
 """
 python texfind.py init
 python texfind.py init -d c:/texlive
-python texfind.py -c py
-python texfind.py -e tabu
+python texfind.py -c abstract
+python texfind.py -e abstract
 python texfind alive
 """
 
