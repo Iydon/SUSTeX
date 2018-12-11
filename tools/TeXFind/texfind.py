@@ -1,5 +1,6 @@
 """
 python texfind.py init
+python texfind.py init -d c:/texlive
 python texfind.py -c py
 python texfind.py -e tabu
 python texfind alive
