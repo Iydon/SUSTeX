@@ -3,6 +3,7 @@ python texfind.py init
 python texfind.py init -d c:/texlive
 python texfind.py -c abstract
 python texfind.py -e abstract
+python texfind.py -p mcmthesis
 python texfind alive
 """
 
@@ -14,14 +15,16 @@ import sys
 
 # CONSTANT
 DASH      = "-"
+LINEBR    = "\n"
 DEFAULT   = "default"
 INIT      = "init"
-DIRECTORY = "d"
 ENCODE    = "utf-8"
 FILE      = "texlive"
-ALIVE     = "alive"
-COMMAND   = "c" # 命令
-ENVIRON   = "e" # 环境
+DIRECTORY = "d"       # 指定初始化路径
+COMMAND   = "c"       # 查找命令定义宏包
+ENVIRON   = "e"       # 查找环境定义宏包
+PACKAGE   = "p"       # 朝赵宏包文类依赖
+ALIVE     = "alive"   # 保持查询状态
 
 SUFFIX = [".sty", ".cls"]
 
@@ -29,6 +32,7 @@ SUFFIX = [".sty", ".cls"]
 root      = "C:/texlive"
 command   = dict()
 environ   = dict()
+package   = dict()
 
 # Functions
 
@@ -86,7 +90,7 @@ def tex_find(opt, name):
     """
     texfind.
     """
-    return eval(load_file(FILE+DASH+opt, "r")).get(name, False)
+    return LINEBR.join(eval(load_file(FILE+DASH+opt, "r")).get(name, ["None"]))
 
 def is_right_suffix(file_name):
     """
@@ -99,7 +103,7 @@ def is_right_suffix(file_name):
 
 def extract_command(content):
     """
-    pass
+    提取定义命令.
     """
     pattern = r"(?<=\\%s\\)[^{#]+"
     f = lambda x: re.findall(pattern%x, content)
@@ -107,14 +111,65 @@ def extract_command(content):
 
 def extract_environ(content):
     """
-    pass
+    提取定义环境.
     """
     pattern = r"(?<=\\newenvironment{)\S+?(?=})"
     return re.findall(pattern, content)
 
+def extract_package(content, file_name):
+    """
+    提取使用宏包.
+    """
+    MatchBeforeAndAfter = "(?<=%s)%s(?=%s)"
+    MatchWithout = "[^%s]%s"
+    MatchWith    = "[%s]%s"
+    SPACE   = " "
+    ESCAPE  = "\\\\"
+    OPTIONS = [r"\[", r"\]"]
+    GROUP   = ["{", "}"]
+    PROVIDE = ["ProvidesPackage", "ProvidesClass", "ProvidesFile"]
+    REQUIRE = ["RequirePackage", "usepackage"]
+    def remove_comment(string:str):
+        pattern = "%s%s%s"%("%", MatchWithout%(LINEBR,"*"), LINEBR)
+        pattern = "%[^\n]*\n"
+        return re.sub(pattern, LINEBR, string)
+    def remove_space(string:str):
+        pattern = MatchWith%(SPACE+LINEBR, "*")
+        return re.sub(pattern, "", string)
+    def remove_option(string:str):
+        pattern = "%s%s%s"%(OPTIONS[0], r"\S*?", OPTIONS[-1])
+        return re.sub(pattern, "", string)
+    def extract_group(string:str, opt:list):
+        result = []
+        for o in opt:
+            pattern = MatchWithout%(GROUP[-1]+ESCAPE, "*")
+            pattern = "%s%s%s%s"%(o, GROUP[0], pattern, GROUP[-1])
+            result += re.findall(pattern, string)
+        return result
+    def extract_content_in_line(string:str):
+        pattern = MatchBeforeAndAfter%(GROUP[0], MatchWithout%(GROUP[-1], "*"), GROUP[-1])
+        result  = re.findall(pattern, string)
+        return result[0].split(",")
+    def extract_content(lst:list):
+        result = []
+        for item in lst:
+            result += extract_content_in_line(item)
+        return result
+    content = remove_option(remove_space(remove_comment(content)))
+    require = extract_content(extract_group(content, REQUIRE))
+    provide = extract_content(extract_group(content, PROVIDE))
+    if provide:
+    	provide = os.path.splitext(provide[0])[0]
+    else:
+    	provide = os.path.splitext(file_name)[0]
+    return provide,require
 
-args = {DEFAULT:False, DASH+DIRECTORY:False,
-        DASH+COMMAND:False, DASH+ENVIRON:False}
+
+args = {DEFAULT:False,
+        DASH+DIRECTORY:False,
+        DASH+COMMAND:False,
+        DASH+ENVIRON:False,
+        DASH+PACKAGE:False,}
 args = parse_argment(sys.argv, args)
 
 if not args[DEFAULT]:
@@ -123,6 +178,9 @@ if not args[DEFAULT]:
         PYOUT(result)
     elif args[DASH+ENVIRON]:
         result = tex_find(ENVIRON, args[DASH+ENVIRON])
+        PYOUT(result)
+    elif args[DASH+PACKAGE]:
+        result = tex_find(PACKAGE, args[DASH+PACKAGE])
         PYOUT(result)
     else:
         PYOUT("使用`texfind init'初始化数据库.")
@@ -135,25 +193,30 @@ elif args[DEFAULT]==INIT:
             if is_right_suffix(filepath):
                 try:
                     content = load_file(file_path, "r")
-                    c_t,e_t = extract_command(content),extract_environ(content)
+                    c_t = extract_command(content)
+                    e_t = extract_environ(content)
+                    p_t = extract_package(content, filepath)
+                    package[p_t[0]] = p_t[-1]
                     for c in c_t:
                         if c in command:
-                            command[c].append(filepath)
+                            command[c].append(file_path)
                         else:
-                            command[c] = [filepath]
+                            command[c] = [file_path]
                     for e in e_t:
                         if e in environ:
-                            environ[e].append(filepath)
+                            environ[e].append(file_path)
                         else:
-                            environ[e] = [filepath]
+                            environ[e] = [file_path]
                 except Exception as e:
                     PYOUT("Error @ %s: "%file_path)
                     PYOUT("    ", e)
     save_file(FILE+DASH+COMMAND, str(command), "w")
     save_file(FILE+DASH+ENVIRON, str(environ), "w")
+    save_file(FILE+DASH+PACKAGE, str(package), "w")
 elif args[DEFAULT]==ALIVE:
     dc = eval(load_file(FILE+DASH+COMMAND, "r"))
     de = eval(load_file(FILE+DASH+ENVIRON, "r"))
+    dp = eval(load_file(FILE+DASH+PACKAGE, "r"))
     while True:
         try:
             name = input(">>> ")
@@ -161,8 +224,11 @@ elif args[DEFAULT]==ALIVE:
             PYOUT("Bye world.")
             break
         PYOUT("Command: ")
-        PYOUT(dc.get(name, False))
+        PYOUT(LINEBR.join(dc.get(name, ["None"])))
         PYOUT()
         PYOUT("Environment: ")
-        PYOUT(de.get(name, False))
+        PYOUT(LINEBR.join(de.get(name, ["None"])))
+        PYOUT()
+        PYOUT("Packages: ")
+        PYOUT(", ".join(dp.get(name, ["None"])))
         PYOUT()
