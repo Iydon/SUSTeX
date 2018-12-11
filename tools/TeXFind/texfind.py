@@ -152,8 +152,8 @@ elif args[DEFAULT]==INIT:
     save_file(FILE+DASH+COMMAND, str(command), "w")
     save_file(FILE+DASH+ENVIRON, str(environ), "w")
 elif args[DEFAULT]==ALIVE:
-    dc = load_file(FILE+DASH+COMMAND, "r")
-    de = load_file(FILE+DASH+ENVIRON, "r")
+    dc = eval(load_file(FILE+DASH+COMMAND, "r"))
+    de = eval(load_file(FILE+DASH+ENVIRON, "r"))
     while True:
         try:
             name = input(">>> ")
