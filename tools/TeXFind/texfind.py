@@ -184,7 +184,7 @@ if not args[DEFAULT]:
         PYOUT(result)
     else:
         PYOUT("使用`texfind init'初始化数据库.")
-        PYOUT("使用`texfind name'查找提供name的宏包.")
+        PYOUT("使用`texfind alive'保持查询状态.")
 elif args[DEFAULT]==INIT:
     root = args[DASH+DIRECTORY] if args[DASH+DIRECTORY] else root
     for dirpath, dirnames, filenames in os.walk(root):
