@@ -107,14 +107,15 @@ def extract_command(content):
     """
     pattern = r"(?<=\\%s\\)[^{#]+"
     f = lambda x: re.findall(pattern%x, content)
-    return f("def") + f("edef") + f("gdef") + f("newcommand")
+    return f("def") + f("edef") + f("gdef") + f("newcommand") + f("renewcommand")
 
 def extract_environ(content):
     """
     提取定义环境.
     """
-    pattern = r"(?<=\\newenvironment{)\S+?(?=})"
-    return re.findall(pattern, content)
+    pattern = r"(?<=\\%s{)\S+?(?=})"
+    f = lambda x: re.findall(pattern%x, content)
+    return f("newenvironment") + f("renewenvironment")
 
 def extract_package(content, file_name):
     """
