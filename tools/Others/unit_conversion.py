@@ -26,7 +26,7 @@ def help():
 	result = """
 pt -> point (本手册的基线之间距离是12 pt)
 pc -> pica (1 pc = 12 pt)
-in -> inch (1 in = 72:27 pt)
+in -> inch (1 in = 72.27 pt)
 bp -> big point (72 bp = 1 in)
 cm -> centimeter (2:54 cm = 1 in)
 mm -> millimeter (10mm = 1 cm)
