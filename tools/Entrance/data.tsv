@@ -1,0 +1,7 @@
+# This is a comment
+time				:time
+:					:eval
+texdoc				:texdoc
+hello	world		Hello world!
+this/that	is		Who?
+?					!
