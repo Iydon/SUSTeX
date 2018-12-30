@@ -45,5 +45,5 @@ def read_database(file:str=FILE, encode:str=ENCODE, re:object=re):
 
 
 def main(text:str):
-	data = read_database(FILE, ENCODE, re)
-	return "\n".join([", ".join(d[:-1]) for d in data])
+    data = read_database(FILE, ENCODE, re)
+    return "\n".join([", ".join(d[:-1]) for d in data])
