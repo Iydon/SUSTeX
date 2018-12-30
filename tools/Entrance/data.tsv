@@ -2,6 +2,7 @@
 time				:time
 :					:eval
 texdoc				:texdoc
+help				:help
 hello	world		Hello world!
 this/that	is		Who?
 ?					!
