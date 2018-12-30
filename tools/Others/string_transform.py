@@ -163,7 +163,7 @@ class string_transform(object):
 import random
 
 
-string = "Lorem ipsum dolor sit amet, consectetuer adipiscing eli."
+string = "Happy New Year"
 st = string_transform(string)
 st.reflectbox(key=lambda x: random.randint(0,1))
 print(st)
