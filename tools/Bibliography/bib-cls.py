@@ -88,11 +88,6 @@ class bib(object):
                 end += 1
 
     def __analysis_item(self, item:str):
-        """
-        Analysis elements in bib item.
-        """
-        result = {"type":"", "label":"", "information":dict()}
-        start,end = 0,0
         return {"type":"article", "label":"aqwertyuiop",
                 "information": {"a":1, "b":2, "c":3}}
 
