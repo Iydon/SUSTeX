@@ -160,4 +160,5 @@ url = input(">>> ")
 content = get_content_from_url(url)
 result  = parse_content(content)
 
-print(result)
+with open("result.tex", "w", encoding="utf-8") as f:
+	f.write(result)
